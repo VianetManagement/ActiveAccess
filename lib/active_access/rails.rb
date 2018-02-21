@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ActiveAccess
   class Railtie < Rails::Railtie
     initializer "active_access.configure_rails_initialization" do
@@ -17,7 +19,7 @@ module ActiveAccess
     end
 
     def use_better_errors?
-      !Rails.env.production? and app.config.consider_all_requests_local
+      !Rails.env.production? && app.config.consider_all_requests_local
     end
 
     def app

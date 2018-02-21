@@ -1,45 +1,51 @@
-require "pp"
+# frozen_string_literal: true
+
 require "ipaddr"
 require "set"
 require "rack"
 
 module ActiveAccess
   class Middleware
-    WHITELISTED_IPS = Set.new
-
-    def self.allow_ip!(addr)
-      WHITELISTED_IPS << IPAddr.new(addr)
+    def initialize(app, handler = {})
+      @app             = app
+      @handler         = handler
+      @whitelisted_ips = Set.new
+      refresh_whitelisted_ips
     end
 
-    allow_ip! "127.0.0.0/8"
-    allow_ip! "::1/128" rescue nil # windows ruby doesn't have ipv6 support
-
-
-    def initialize(app, handler = nil)
-      @app      = app
-      @handler  = handler
+    def allow_ip!(addr)
+      @whitelisted_ips << IPAddr.new(addr)
     end
 
     def call(rack_request)
-      if allow_ip?(rack_request)
+      if allow?(rack_request)
         @app.call(rack_request)
       else
-        @app.call(rack_request)
+        [404, { "Content-Type" => "text/html", "Content-Length" => config.message.length.to_s }, [config.message]]
       end
     end
 
     private
 
-    def allow_ip?(rack_request)
+    def allow?(rack_request)
       request = Rack::Request.new(rack_request)
-      pp "~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-      pp request.ip
-      pp "~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
-      return true unless request.ip and !request.ip.strip.empty?
-      ip = IPAddr.new request.ip.split("%").first
-      WHITELISTED_IPS.any? { |subnet| subnet.include? ip }
+      if request.ip.present?
+        ip_address = IPAddr.new(request.ip.split("%").first)
+        @whitelisted_ips.any? { |subnet| subnet.include? ip_address }
+      end
     end
 
+    # A place to fetch a cached / a list of IP's
+    def refresh_whitelisted_ips
+      allow_ip! "127.0.0.0/8"
+      allow_ip! "::1/128"
+    rescue StandardError # windows ruby doesn't have ipv6 support
+      nil
+    end
+
+    def config
+      @config ||= ActiveAccess.config.merge(@handler)
+    end
   end
 end
