@@ -1,0 +1,16 @@
+sudo: false
+language: ruby
+rvm:
+  - 2.5.0
+  - 2.4.3
+  - 2.3.6
+
+cache:
+  - bundler
+
+branches:
+  only:
+    - master
+
+before_install:
+  - gem update --system
