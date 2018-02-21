@@ -4,15 +4,17 @@ module ActiveAccess
   class Railtie < Rails::Railtie
 
     config.after_initialize do
-      initialize_active_access
+      remove_middleware unless use_active_access?
     end
 
-    def initialize_active_access
-      if use_active_access?
-        insert_middleware
-        ActiveAccess.logger           = Rails.logger
-        ActiveAccess.application_root = Rails.root.to_s
-      end
+    initializer "active_access.configure_rails_initialization" do
+      insert_middleware
+      ActiveAccess.logger           = Rails.logger
+      ActiveAccess.application_root = Rails.root.to_s
+    end
+
+    def remove_middleware
+      app.middleware.delete(ActiveAccess::Middleware)
     end
 
     def insert_middleware
