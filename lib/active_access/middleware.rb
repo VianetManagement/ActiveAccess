@@ -31,13 +31,9 @@ module ActiveAccess
     private
 
     def allow_ip?(rack_request)
-      pp "~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-      pp rack_request
-      ActiveAccess.logger.info rack_request
-      pp "~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
       request = Rack::Request.new(rack_request)
-      pp request
-      ActiveAccess.logger.info request
+      pp "~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+      pp request.ip
       pp "~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
       return true unless request.ip and !request.ip.strip.empty?
