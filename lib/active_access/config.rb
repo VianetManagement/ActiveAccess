@@ -47,14 +47,15 @@ module ActiveAccess
     # config = ActiveAccess::Config.new #=> { "enabled" => true, ... }
     # config.merge(tip: 2.00, flip: 1)  #=> { "enabled" => true, "tip" => 2.00, "flip" => 1, ... }
     def update!(**hash)
-      hash.each_pair { |key, value| self[key.to_s] = value }
+      hash.each_pair { |key, value| self[key.to_s] = value } unless hash.empty?
       self
     end
     alias merge! update!
     alias merge update!
 
     # @OVERRIDE
-    def initialize(*)
+    def initialize(hash = nil)
+      update!(hash) if hash
       super
       self.enabled = true if enabled.nil?
       self.message = "Resource Not Found" if message.nil?

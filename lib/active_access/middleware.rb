@@ -6,6 +6,8 @@ require "rack"
 
 module ActiveAccess
   class Middleware
+    attr_accessor :whitelisted_ips
+
     def initialize(app, handler = {})
       @app             = app
       @handler         = handler
