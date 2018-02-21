@@ -2,7 +2,12 @@
 
 module ActiveAccess
   class Railtie < Rails::Railtie
-    initializer "active_access.configure_rails_initialization" do
+
+    config.after_initialize do
+      initialize_active_access
+    end
+
+    def initialize_active_access
       if use_active_access?
         insert_middleware
         ActiveAccess.logger           = Rails.logger
