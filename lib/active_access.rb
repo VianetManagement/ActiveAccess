@@ -2,7 +2,7 @@
 
 require "active_support/core_ext/object/blank"
 
-require "active_access/config"
+require "active_access/utility/config"
 require "active_access/middleware"
 require "active_access/version"
 
@@ -11,7 +11,11 @@ module ActiveAccess
     attr_accessor :application_root, :logger
 
     def config
-      @config ||= Config.new
+      @config ||= Utility::Config.new
+    end
+
+    def configure
+      yield config
     end
   end
 end
