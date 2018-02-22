@@ -56,7 +56,7 @@ module ActiveAccess
     end
 
     def config
-      @config ||= ActiveAccess.config.merge(@handler)
+      ActiveAccess.config
     end
   end
 end
