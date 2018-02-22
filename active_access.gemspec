@@ -3,7 +3,7 @@
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "lib"))
 
-require "active_access/version"
+require "active-access/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "active-access"

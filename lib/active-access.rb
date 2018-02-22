@@ -2,9 +2,9 @@
 
 require "active_support/core_ext/object/blank"
 
-require "active_access/utility/config"
-require "active_access/middleware"
-require "active_access/version"
+require "active-access/utility/config"
+require "active-access/middleware"
+require "active-access/version"
 
 module ActiveAccess
   class << self
@@ -20,4 +20,4 @@ module ActiveAccess
   end
 end
 
-require "active_access/rails" if defined? Rails::Railtie
+require "active-access/rails" if defined? Rails::Railtie

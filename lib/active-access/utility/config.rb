@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "active_access/utility/hash_mapper"
+require "active-access/utility/hash_mapper"
 
 module ActiveAccess
   module Utility

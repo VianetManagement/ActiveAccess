@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
-require "active_access"
+require "active-access"
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require File.expand_path(f) }
 Dir["#{File.dirname(__FILE__)}/**/*examples.rb"].each { |f| require f }
