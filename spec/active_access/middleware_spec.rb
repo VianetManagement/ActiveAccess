@@ -11,8 +11,9 @@ module ActiveAccess
 
       context "Local IP Addresses (Default)" do
         it "Should initialize with local ip addresses added" do
-          expect(app.whitelisted_ips.count).to eq(1).or(eq(2))
-          expect(app.whitelisted_ips).to include(IPAddr.new("127.0.0.0/8"))
+          app # Initialize it
+          expect(ActiveAccess::Middleware::WHITELISTED_IPS.count).to eq(1).or(eq(2))
+          expect(ActiveAccess::Middleware::WHITELISTED_IPS).to include(IPAddr.new("127.0.0.0/8"))
         end
 
         it "Allows passage of whitelisted submasked-local ips" do
@@ -33,7 +34,7 @@ module ActiveAccess
       end
 
       context "Newly added IP addresses" do
-        before { ActiveAccess.config.merge!(allow_ips: ["192.168.1.0/8", "32.40.22.33"]) }
+        before { ActiveAccess.config.allowed_ips = ["192.168.1.0/8", "32.40.22.33"] }
 
         it "Should allow ip's that were initialized to pass" do
           expect(app.call("REMOTE_ADDR" => "192.168.1.1")).to eq("PASSED")
@@ -49,7 +50,7 @@ module ActiveAccess
 
     describe "Protected Domains" do
       context "Requests with protected domains" do
-        before { ActiveAccess.config.merge!(protected_domains: ["admin.localhost.com", "google.com"]) }
+        before { ActiveAccess.config.protected_domains = ["admin.localhost.com", "google.com"] }
 
         it "Should allow requests with the correct IP to access the protected subdomain" do
           expect(app.call("REMOTE_ADDR" => "127.0.0.1", "HTTP_HOST" => "admin.localhost.com:3000")).to eq("PASSED")
