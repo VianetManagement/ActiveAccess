@@ -22,7 +22,6 @@ module ActiveAccess
       end
 
       def allowed_ips=(ip_addresses)
-        ip_addresses = split_or_ship(ip_addresses)
         self["allowed_ips"] = Set.new(split_or_ship(ip_addresses))
       end
 
