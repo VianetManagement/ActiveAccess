@@ -22,12 +22,19 @@ module ActiveAccess
       end
 
       def allowed_ips=(ip_addresses)
-        self["allowed_ips"] = Set.new(ip_addresses)
+        ip_addresses = split_or_ship(ip_addresses)
+        self["allowed_ips"] = Set.new(split_or_ship(ip_addresses))
       end
 
       def protected_domains=(domains)
         return if domains.blank?
-        domains.each { |domain| self["protected_domains"][domain.to_s] = true }
+        split_or_ship(domains).each { |domain| self["protected_domains"][domain.to_s] = true }
+      end
+
+      private
+
+      def split_or_ship(values)
+        values.is_a?(String) ? values.split(",").map(&:strip) : values
       end
     end
   end

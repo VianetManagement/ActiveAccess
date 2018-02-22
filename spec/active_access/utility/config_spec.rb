@@ -36,16 +36,50 @@ module ActiveAccess
         end
       end
 
+      describe "#allowed_ips" do
+        let(:ip_addresses) { ["127.0.0.1", "192.168.1.1"] }
+
+        it "Will accept a comma delimited string for allowed ips" do
+          config.allowed_ips = ip_addresses.join(", ")
+          contains_permitted_ips(config)
+        end
+
+        it "Should allow me to initialise with an Array of ip addresses" do
+          new_config = described_class.new(allowed_ips: ip_addresses)
+          contains_permitted_ips(new_config)
+        end
+
+        it "Should convert all array assigned domains into a Set Map" do
+          config.allowed_ips = ip_addresses
+          contains_permitted_ips(config)
+        end
+
+        def contains_permitted_ips(config) # rubocop:disable Metrics/AbcSize
+          expect(config.allowed_ips).to be_a(Set)
+          expect(config.allowed_ips).to include(ip_addresses.first)
+          expect(config.allowed_ips).to include(ip_addresses.last)
+        end
+      end
+
       describe "#protected_domains" do
+        let(:domains) { ["localhost", "admin.localhost.com"] }
+
+        it "Will accept a comma delimited string for protected domains" do
+          config.protected_domains = domains.join(", ")
+          contains_protected_domains(config)
+        end
+
         it "Should allow me to initialise with an Array of domains" do
-          new_config = described_class.new(protected_domains: ["localhost", "admin.localhost.com"])
-          expect(new_config.protected_domains).to be_a(Hash)
-          expect(new_config.protected_domains).to have_key("localhost")
-          expect(new_config.protected_domains).to have_key("admin.localhost.com")
+          new_config = described_class.new(protected_domains: domains)
+          contains_protected_domains(new_config)
         end
 
         it "Should convert all array assigned domains into a Hash Map" do
-          config.protected_domains = ["localhost", "admin.localhost.com"]
+          config.protected_domains = domains
+          contains_protected_domains(config)
+        end
+
+        def contains_protected_domains(config)
           expect(config.protected_domains).to be_a(Hash)
           expect(config.protected_domains).to have_key("localhost")
           expect(config.protected_domains).to have_key("admin.localhost.com")
