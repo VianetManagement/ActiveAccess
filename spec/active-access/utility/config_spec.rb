@@ -54,7 +54,7 @@ module ActiveAccess
           contains_permitted_ips(config)
         end
 
-        def contains_permitted_ips(config) # rubocop:disable Metrics/AbcSize
+        def contains_permitted_ips(config)
           expect(config.allowed_ips).to be_a(Set)
           expect(config.allowed_ips).to include(ip_addresses.first)
           expect(config.allowed_ips).to include(ip_addresses.last)
@@ -83,6 +83,41 @@ module ActiveAccess
           expect(config.protected_domains).to be_a(Hash)
           expect(config.protected_domains).to have_key("localhost")
           expect(config.protected_domains).to have_key("admin.localhost.com")
+        end
+      end
+
+      describe "#whitelisted_urls" do
+        let(:urls)     { ["localhost.com/robots", "/robots"] }
+        let(:url_sets) { [["localhost.com/robots", :any], ["/robots", "POST"]] }
+
+        it "Will accept a comma delimited string for white listed urls" do
+          config.whitelisted_urls = urls.join(", ")
+          contains_whitelisted_domains(config)
+        end
+
+        it "Should allow me to initialise with an Array of urls" do
+          new_config = described_class.new(whitelisted_urls: urls)
+          contains_whitelisted_domains(new_config)
+        end
+
+        it "Should convert all array assigned urls into a Hash Map" do
+          config.whitelisted_urls = urls
+          contains_whitelisted_domains(config)
+        end
+
+        it "Should accept a nested Array for assigning permitted Request Methods" do
+          config.whitelisted_urls = url_sets
+          expect(config.whitelisted_urls["localhost.com/robots"]).to eq("ANY")
+          expect(config.whitelisted_urls["/robots"]).to eq("POST")
+        end
+
+        def contains_whitelisted_domains(config)
+          expect(config.whitelisted_urls).to be_a(Hash)
+          expect(config.whitelisted_urls).to have_key("localhost.com/robots")
+          expect(config.whitelisted_urls).to have_key("/robots")
+
+          expect(config.whitelisted_urls["localhost.com/robots"]).to eq("GET")
+          expect(config.whitelisted_urls["/robots"]).to eq("GET")
         end
       end
     end

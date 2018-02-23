@@ -37,6 +37,10 @@ StringLiterals:
 #################
 # Disabled cops #
 #################
+Metrics/AbcSize:
+  Exclude:
+    - spec/**/*
+
 Metrics/ClassLength:
   Enabled: false
 

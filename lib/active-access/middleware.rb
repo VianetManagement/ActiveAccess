@@ -31,6 +31,7 @@ module ActiveAccess
     def allow?(rack_request)
       request = Rack::Request.new(rack_request)
       return true unless protected_domain?(request)
+      return true if whitelisted_path?(request)
 
       if request.ip.present?
         ip_address = IPAddr.new(request.ip.split("%").first)
@@ -40,7 +41,13 @@ module ActiveAccess
 
     def protected_domain?(request)
       return false if config.protected_domains.blank?
-      config.protected_domains[request.host].presence
+      config.protected_domains[config.strip_url(request.host)]
+    end
+
+    def whitelisted_path?(request)
+      return false if config.whitelisted_urls.blank?
+      request_method = whitelisted_request_method(request)
+      request_method && (request_method == "ANY" || request_method.upcase == request.request_method)
     end
 
     # A place to fetch a cached / a list of IP's
@@ -53,6 +60,10 @@ module ActiveAccess
           next # windows ruby doesn't have ipv6 support
         end
       end
+    end
+
+    def whitelisted_request_method(request)
+      config.whitelisted_urls[request.path] || config.whitelisted_urls[config.strip_url(request.url)]
     end
 
     def config
