@@ -74,5 +74,26 @@ module ActiveAccess
         end
       end
     end
+
+    describe "Whitelisted URLS" do
+      let(:request) { { "HTTP_HOST" => "localhost.com", "SERVER_PORT" => 443, "HTTPS" => "on" } }
+      before do
+        ActiveAccess.config.protected_domains = "localhost.com"
+        ActiveAccess.config.whitelisted_urls = [["localhost.com/robots.txt", "ANY"], ["/gotcha.txt", "PATCH"]]
+      end
+
+      it "Should allow passage of the request if the destination is permitted" do
+        expect(app.call(request.merge("REQUEST_METHOD" => "GET", "PATH_INFO" => "/robots.txt"))).to eq("PASSED")
+        expect(app.call(request.merge("REQUEST_METHOD" => "PATCH", "PATH_INFO" => "/gotcha.txt"))).to eq("PASSED")
+      end
+
+      it "Should disallow if request method is a mismatch" do
+        expect(app.call(request.merge("REQUEST_METHOD" => "GET", "PATH_INFO" => "/gotcha.txt"))).to_not eq("PASSED")
+      end
+
+      it "should disallow if requested path is incorrect" do
+        expect(app.call(request.merge("REQUEST_METHOD" => "GET", "PATH_INFO" => "/user_path"))).to_not eq("PASSED")
+      end
+    end
   end
 end
