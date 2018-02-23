@@ -12,9 +12,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ["George J. Protacio-Karaszi"]
   spec.email         = ["georgekaraszi@gmail.com"]
 
-  spec.summary       = "Restrict access to your application by IP"
-  spec.description   = "Restrict access to your application by IP"
-  spec.homepage      = "https://github.com/GeorgeKaraszi/ActiveAccess"
+  spec.summary       = "Restrict access to your Rails application by IP"
+  spec.description   = "Restrict access to your Rails application by IP"
+  spec.homepage      = "https://github.com/elevatorup/ActiveAccess"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
