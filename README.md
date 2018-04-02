@@ -40,11 +40,12 @@ end
 ### General Info:
 
 Configuration Attributes:
-- **protected_domains**: Accepts a comma delimited list of domains (ex: "admin.localhost.com, localhost, localhost.com")
+- **protected_domains**: Accepts a comma delimited list of domains (ex: "_admin.localhost.com, localhost, localhost.com_")
 - **allowed_ips**: Accepts a comma delimited list of IP's. And also accepts submasked IP's too (ex: "_127.0.0.0/32_")
 - **whitelisted_urls**: Accepts a nested array of the destination and its allowed HTTP request method.
    - Using "POST", "GET", "PUT", "PATCH", or "DELETE" will only allow the request to pass if its made using the specified method.
    - Using "ANY" will allow any request type to that destination.
+- **message**: The message that is displayed when someone is prevented from accessing your application.
 
 
 ## License
