@@ -8,7 +8,7 @@ require "active-access/version"
 Gem::Specification.new do |spec|
   spec.name          = "active-access"
   spec.version       = ActiveAccess::VERSION
-  spec.required_ruby_version = [">= 2.3.0", "< 2.6.0"]
+  spec.required_ruby_version = [">= 2.3.0"]
   spec.authors       = ["George J. Protacio-Karaszi"]
   spec.email         = ["georgekaraszi@gmail.com"]
 
