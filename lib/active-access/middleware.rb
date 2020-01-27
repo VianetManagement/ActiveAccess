@@ -28,13 +28,19 @@ module ActiveAccess
 
     private
 
+    def request_ip_address
+      return request["cf-connecting-ip"] if request["cf-connecting-ip"].present?
+      return request["x-forwarded-for"] if request["x-forwarded-for"].present?
+      request&.remote_ip
+    end
+
     def allow?(rack_request)
       request = Rack::Request.new(rack_request)
       return true unless protected_domain?(request)
       return true if whitelisted_path?(request)
 
-      if request.ip.present?
-        ip_address = IPAddr.new(request.ip.split("%").first)
+      if request_ip_address.present?
+        ip_address = IPAddr.new(request_ip_address.split("%").first)
         WHITELISTED_IPS.any? { |subnet| subnet.include? ip_address }
       end
     end
